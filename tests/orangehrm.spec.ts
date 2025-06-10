@@ -1,0 +1,67 @@
+import { test, expect } from "@playwright/test";
+import { TIMEOUT } from "dns";
+
+test("has title", async ({ page }) => {
+    await page.goto(
+        "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
+    );
+
+    //LOGIN
+    await page.getByPlaceholder("Username").fill("Admin");
+    await page.getByPlaceholder("Password").fill("admin123");
+    await page.getByRole("button", { name: "Login" }).click();
+
+    //CREATE EMPLOYEE
+    await page.getByRole("link", { name: "PIM" }).click();
+    await page.getByRole("link", { name: "Add Employee" }).click();
+    await page.getByPlaceholder("First Name").fill("Test");
+    await page.getByPlaceholder("Last Name").fill("User4");
+
+    await page.waitForTimeout(5000);
+
+    await page.getByRole("button", { name: "Save" }).click();
+
+    await page.waitForTimeout(5000);
+
+    //await page.getByRole("heading", { name: "Personal Details" });
+    await expect
+        .soft(page.getByText("Personal DetailsEmployee Full"))
+        .toBeVisible();
+
+    //SEARCH FOR CREATED EMPLOYEE
+    await page.getByRole("link", { name: "Employee List" }).click();
+    await page.getByPlaceholder("Type for hints...").first().fill("Test User4");
+    await page.getByRole("button", { name: "Search" }).click();
+
+    await page.evaluate(() => window.scrollBy(0, 300));
+
+    await page.waitForTimeout(5000);
+
+    //EDIT CREATED EMPLOYEE
+    //await page.waitForTimeout(4000);
+    // eslint-disable-next-line playwright/no-force-option
+    await page
+        .locator(".oxd-icon.bi-pencil-fill")
+        .nth(0)
+        // eslint-disable-next-line playwright/no-force-option
+        .click({ force: true });
+    await page.getByRole("heading", { name: "Personal Details" });
+    await page.getByPlaceholder("First Name").fill("123");
+    await page.waitForTimeout(5000);
+    await page
+        .locator("form")
+        .filter({ hasText: "Employee Full NameEmployee" })
+        .getByRole("button")
+        .click();
+
+    //DELETE CREATED EMPLOYEE
+    await page.getByRole("link", { name: "Employee List" }).click();
+    await page.getByPlaceholder("Type for hints...").first().fill("Test User4");
+    await page.getByRole("button", { name: "Search" }).click();
+    await expect
+        .soft(page.getByText("Personal DetailsEmployee Full"))
+        .toBeVisible();
+    // eslint-disable-next-line playwright/no-force-option
+    await page.locator("oxd-icon bi-trash").nth(0).click({ force: true });
+    page.getByRole("button", { name: " Yes, Delete" });
+});
