@@ -15,7 +15,7 @@ test("has title", async ({ page }) => {
     await page.getByRole("link", { name: "PIM" }).click();
     await page.getByRole("link", { name: "Add Employee" }).click();
     await page.getByPlaceholder("First Name").fill("Test");
-    await page.getByPlaceholder("Last Name").fill("User4");
+    await page.getByPlaceholder("Last Name").fill("User1");
 
     await page.waitForTimeout(5000);
 
@@ -30,7 +30,7 @@ test("has title", async ({ page }) => {
 
     //SEARCH FOR CREATED EMPLOYEE
     await page.getByRole("link", { name: "Employee List" }).click();
-    await page.getByPlaceholder("Type for hints...").first().fill("Test User4");
+    await page.getByPlaceholder("Type for hints...").first().fill("Test User1");
     await page.getByRole("button", { name: "Search" }).click();
 
     await page.evaluate(() => window.scrollBy(0, 300));
@@ -45,23 +45,45 @@ test("has title", async ({ page }) => {
         .nth(0)
         // eslint-disable-next-line playwright/no-force-option
         .click({ force: true });
-    await page.getByRole("heading", { name: "Personal Details" });
-    await page.getByPlaceholder("First Name").fill("123");
+    await expect
+        .soft(page.getByText("Personal DetailsEmployee Full"))
+        .toBeVisible();
     await page.waitForTimeout(5000);
+    await page.getByPlaceholder("First Name").fill("123");
+
     await page
         .locator("form")
         .filter({ hasText: "Employee Full NameEmployee" })
         .getByRole("button")
         .click();
-
-    //DELETE CREATED EMPLOYEE
-    await page.getByRole("link", { name: "Employee List" }).click();
-    await page.getByPlaceholder("Type for hints...").first().fill("Test User4");
-    await page.getByRole("button", { name: "Search" }).click();
     await expect
         .soft(page.getByText("Personal DetailsEmployee Full"))
         .toBeVisible();
+
+    //DELETE CREATED EMPLOYEE
+    await page.getByRole("link", { name: "Employee List" }).click();
+    await page.getByPlaceholder("Type for hints...").first().fill("123 User");
+    await page.getByRole("button", { name: "Search" }).click();
+    await page.evaluate(() => window.scrollBy(0, 300));
+    await page.waitForTimeout(5000);
     // eslint-disable-next-line playwright/no-force-option
-    await page.locator("oxd-icon bi-trash").nth(0).click({ force: true });
-    page.getByRole("button", { name: " Yes, Delete" });
+    await page.locator(".oxd-icon.bi-trash").nth(0).click({ force: true });
+    await page.getByRole("button", { name: " Yes, Delete" }).click();
+
+    //PAGINATION
+    await page.getByRole("button", { name: "Reset" }).click();
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page
+        .locator(".oxd-icon.bi-chevron-right")
+        .nth(0)
+        // eslint-disable-next-line playwright/no-force-option
+        .click({ force: true });
+
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page
+        .locator(".oxd-icon.bi-chevron-left")
+        .nth(0)
+        // eslint-disable-next-line playwright/no-force-option
+        .click({ force: true });
+    await page.waitForTimeout(10000);
 });
