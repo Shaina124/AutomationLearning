@@ -1,22 +1,53 @@
 import { expect, test } from "@playwright/test";
-import { login } from "../utils/login";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 
 test.describe("Edit Employee", () => {
-    test("Edit an existing employee", async ({ page }) => {
-        await login(page);
+    test.beforeEach(async ({ page }) => {
+        //LOGIN
+        await page.goto(
+            "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
+        );
+        await page.getByPlaceholder("Username").fill("Admin");
+        await page.getByPlaceholder("Password").fill("admin123");
+        await page.getByRole("button", { name: "Login" }).click();
 
+        //CREATE EMPLOYEE
+        await page.getByRole("link", { name: "PIM" }).click();
+        await page.getByRole("link", { name: "Add Employee" }).click();
+        await page.getByPlaceholder("First Name").fill("Sally");
+        await page.getByPlaceholder("Last Name").fill("Walker");
+
+        const edit_employeeIdInput = page
+            .locator("form")
+            .getByRole("textbox")
+            .nth(4);
+        const edit_employeeId = await edit_employeeIdInput.inputValue();
+        console.log(`Captured Employee ID: ${edit_employeeId}`);
+
+        writeFileSync(
+            "data/edit employee id.json",
+            JSON.stringify({ edit_employeeId }, null, 4),
+        );
+
+        await page.getByRole("button", { name: "Save" }).click();
+        await expect
+            .soft(page.getByText("Personal DetailsEmployee Full"))
+            .toBeVisible();
+    });
+
+    test("Edit an existing employee", async ({ page }) => {
         //SEARCH FOR EMPLOYEE
-        const data = JSON.parse(readFileSync("data/employee.json", "utf-8"));
-        const employeeId = data.employeeId;
+        const { edit_employeeId } = JSON.parse(
+            readFileSync("data/edit employee id.json", "utf-8"),
+        );
 
         await page.getByRole("link", { name: "PIM" }).click();
         await page.getByRole("link", { name: "Employee List" }).click();
-        await page.getByRole("textbox").nth(2).fill(employeeId);
+        await page.getByRole("textbox").nth(2).fill(edit_employeeId);
         await page.getByRole("button", { name: "Search" }).click();
-        console.log(`Searched for Employee ID: ${employeeId}`);
+        console.log(`Searched for Employee ID: ${edit_employeeId}`);
 
-        await expect.soft(page.getByText(employeeId)).toBeVisible();
+        await expect.soft(page.getByText(edit_employeeId)).toBeVisible();
 
         await page.evaluate(() => window.scrollBy(0, 300));
 

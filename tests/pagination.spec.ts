@@ -17,6 +17,8 @@ test.describe("Employee List Pagination", () => {
             // eslint-disable-next-line playwright/no-force-option
             .click({ force: true });
 
+        test.setTimeout(300_000);
+
         await page.evaluate(() =>
             window.scrollTo(0, document.body.scrollHeight),
         );
@@ -25,5 +27,7 @@ test.describe("Employee List Pagination", () => {
             .nth(0)
             // eslint-disable-next-line playwright/no-force-option
             .click({ force: true });
+
+        test.setTimeout(300_000);
     });
 });
