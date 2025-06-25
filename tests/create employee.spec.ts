@@ -20,8 +20,11 @@ test.describe("Create Employee", () => {
 
         writeFileSync(
             "data/employee.json",
-            JSON.stringify({ employeeId }, null, 2),
+            JSON.stringify({ employeeId }, null, 4),
         );
+
+        const utcTimeMillis: number = Date.now();
+        console.log(utcTimeMillis);
 
         await page.getByRole("button", { name: "Save" }).click();
         await expect

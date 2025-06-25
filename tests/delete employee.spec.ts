@@ -29,6 +29,9 @@ test.describe("Delete Employee", () => {
             JSON.stringify({ delete_employeeId }, null, 4),
         );
 
+        const utcTimeMillis: number = Date.now();
+        console.log(utcTimeMillis);
+
         await page.getByRole("button", { name: "Save" }).click();
         await expect
             .soft(page.getByText("Personal DetailsEmployee Full"))
