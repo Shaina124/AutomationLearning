@@ -1,36 +1,33 @@
 import { expect, test } from "@playwright/test";
 import { readFileSync, writeFileSync } from "fs";
+import { login } from "../utils/login";
+import { createEmp } from "../utils/createEmp";
 
 test.describe("Edit Employee", () => {
     test.beforeEach(async ({ page }) => {
         //LOGIN
-        await page.goto(
-            "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
-        );
-        await page.getByPlaceholder("Username").fill("Admin");
-        await page.getByPlaceholder("Password").fill("admin123");
-        await page.getByRole("button", { name: "Login" }).click();
+        await login(page);
 
         //CREATE EMPLOYEE
-        await page.getByRole("link", { name: "PIM" }).click();
-        await page.getByRole("link", { name: "Add Employee" }).click();
-        await page.getByPlaceholder("First Name").fill("Sally");
-        await page.getByPlaceholder("Last Name").fill("Walker");
+        await createEmp(page);
 
         const edit_employeeIdInput = page
             .locator("form")
             .getByRole("textbox")
             .nth(4);
         const edit_employeeId = await edit_employeeIdInput.inputValue();
+
+        const empfirstnameInput = page.getByPlaceholder("First Name");
+        const empfirstname = await empfirstnameInput.inputValue();
+
+        console.log(`Captured Employee First Name: ${empfirstname}`);
         console.log(`Captured Employee ID: ${edit_employeeId}`);
 
         writeFileSync(
             "data/edit employee id.json",
-            JSON.stringify({ edit_employeeId }, null, 4),
+            JSON.stringify({ edit_employeeId, empfirstname }, null, 4),
+            "utf-8",
         );
-
-        const utcTimeMillis: number = Date.now();
-        console.log(utcTimeMillis);
 
         await page.getByRole("button", { name: "Save" }).click();
         await expect
@@ -40,7 +37,7 @@ test.describe("Edit Employee", () => {
 
     test("Edit an existing employee", async ({ page }) => {
         //SEARCH FOR EMPLOYEE
-        const { edit_employeeId } = JSON.parse(
+        const { edit_employeeId, empfirstname } = JSON.parse(
             readFileSync("data/edit employee id.json", "utf-8"),
         );
 
@@ -50,7 +47,7 @@ test.describe("Edit Employee", () => {
         await page.getByRole("button", { name: "Search" }).click();
         console.log(`Searched for Employee ID: ${edit_employeeId}`);
 
-        await expect.soft(page.getByText(edit_employeeId)).toBeVisible();
+        await expect.soft(page.getByText(empfirstname)).toBeVisible();
 
         await page.evaluate(() => window.scrollBy(0, 300));
 

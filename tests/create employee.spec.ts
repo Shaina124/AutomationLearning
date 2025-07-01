@@ -1,15 +1,20 @@
 import { expect, test } from "@playwright/test";
 import { login } from "../utils/login";
+import { createEmp } from "../utils/createEmp";
 import { writeFileSync } from "fs";
+// import { writeFileSync } from "fs";
+// import { join } from "path";
+// import { faker } from "@faker-js/faker";
+// import { utcTime } from "./utcTime";
 
 test.describe("Create Employee", () => {
-    test("Create a new employee", async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
+        //LOGIN
         await login(page);
+    });
 
-        await page.getByRole("link", { name: "PIM" }).click();
-        await page.getByRole("link", { name: "Add Employee" }).click();
-        await page.getByPlaceholder("First Name").fill("Sally");
-        await page.getByPlaceholder("Last Name").fill("Walker");
+    test("Create a new employee", async ({ page }) => {
+        await createEmp(page);
 
         const employeeIdInput = page
             .locator("form")
@@ -23,12 +28,9 @@ test.describe("Create Employee", () => {
             JSON.stringify({ employeeId }, null, 4),
         );
 
-        const utcTimeMillis: number = Date.now();
-        console.log(utcTimeMillis);
-
         await page.getByRole("button", { name: "Save" }).click();
         await expect
-            .soft(page.getByText("Personal DetailsEmployee Full"))
+            .soft(page.getByRole("heading", { name: "Personal Details" }))
             .toBeVisible();
     });
 });

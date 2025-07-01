@@ -2,9 +2,12 @@ import { test } from "@playwright/test";
 import { login } from "../utils/login";
 
 test.describe("Employee List Pagination", () => {
-    test("Employee List Pagination", async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
+        //LOGIN
         await login(page);
+    });
 
+    test("Employee List Pagination", async ({ page }) => {
         await page.getByRole("link", { name: "PIM" }).click();
         await page.getByRole("link", { name: "Employee List" }).click();
 
