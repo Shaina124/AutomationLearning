@@ -1,21 +1,15 @@
 import { expect, test } from "@playwright/test";
 import { readFileSync, writeFileSync } from "fs";
+import { login } from "../utils/login";
+import { createEmp } from "../utils/createEmp";
 
 test.describe("Delete Employee", () => {
     test.beforeEach(async ({ page }) => {
         //LOGIN
-        await page.goto(
-            "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
-        );
-        await page.getByPlaceholder("Username").fill("Admin");
-        await page.getByPlaceholder("Password").fill("admin123");
-        await page.getByRole("button", { name: "Login" }).click();
+        await login(page);
 
         //CREATE EMPLOYEE
-        await page.getByRole("link", { name: "PIM" }).click();
-        await page.getByRole("link", { name: "Add Employee" }).click();
-        await page.getByPlaceholder("First Name").fill("Sally");
-        await page.getByPlaceholder("Last Name").fill("Walker");
+        await createEmp(page);
 
         const delete_employeeIdInput = page
             .locator("form")
@@ -24,13 +18,12 @@ test.describe("Delete Employee", () => {
         const delete_employeeId = await delete_employeeIdInput.inputValue();
         console.log(`Captured Employee ID: ${delete_employeeId}`);
 
+        console.log(delete_employeeId);
+
         writeFileSync(
             "data/delete employee id.json",
             JSON.stringify({ delete_employeeId }, null, 4),
         );
-
-        const utcTimeMillis: number = Date.now();
-        console.log(utcTimeMillis);
 
         await page.getByRole("button", { name: "Save" }).click();
         await expect

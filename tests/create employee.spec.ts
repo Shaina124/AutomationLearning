@@ -2,10 +2,6 @@ import { expect, test } from "@playwright/test";
 import { login } from "../utils/login";
 import { createEmp } from "../utils/createEmp";
 import { writeFileSync } from "fs";
-// import { writeFileSync } from "fs";
-// import { join } from "path";
-// import { faker } from "@faker-js/faker";
-// import { utcTime } from "./utcTime";
 
 test.describe("Create Employee", () => {
     test.beforeEach(async ({ page }) => {
