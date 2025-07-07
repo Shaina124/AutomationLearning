@@ -14,16 +14,12 @@ test.describe("Search Employee", () => {
 
         await safeClick(page, "text=PIM", "PIM link");
 
-        //await page.getByRole("link", { name: "PIM" }).click();
-
         await safeClick(page, "text=Employee List", "Employee List link");
 
-        //await page.getByRole("link", { name: "Employee List" }).click();
         await page.getByRole("textbox").nth(2).fill(employeeId);
 
         await safeClick(page, "button:has-text('Search')", "Search button");
 
-        //await page.getByRole("button", { name: "Search" }).click();
         console.log(`Searched for Employee ID: ${employeeId}`);
 
         await expect.soft(page.getByText(employeeId)).toBeVisible();

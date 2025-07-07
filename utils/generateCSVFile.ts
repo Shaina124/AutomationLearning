@@ -1,9 +1,9 @@
-import { faker } from "@faker-js/faker";
-import { writeFileSync, existsSync, mkdirSync } from "fs";
+import fs from "fs";
 import path from "path";
+import { faker } from "@faker-js/faker";
 import { utcTime } from "./utcTime";
 
-export function generateEmployeeCSV(count: number = 59): void {
+export function generateCSVFile(recordCount = 55) {
     const headers = [
         "first_name",
         "middle_name",
@@ -31,15 +31,16 @@ export function generateEmployeeCSV(count: number = 59): void {
 
     const rows: string[] = [];
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < recordCount; i++) {
         const firstName = faker.person.firstName();
         const lastName = faker.person.lastName();
-        const employeeId = `ab${(i + 1).toString().padStart(2, "0")}-${utcTime()}`;
+        const employeeId = `${utcTime()}${i.toString(36)}`;
 
+        // Fill required fields, leave others empty
         const row = [
-            `${firstName}`, // first_name
+            firstName, // first_name
             "", // middle_name
-            `${lastName}`, // last_name
+            lastName, // last_name
             employeeId, // employee_id
             "",
             "",
@@ -66,14 +67,10 @@ export function generateEmployeeCSV(count: number = 59): void {
 
     const csvContent = [headers.join(","), ...rows].join("\n");
 
-    const dir = path.resolve(__dirname, "../data");
-    if (!existsSync(dir)) {
-        mkdirSync(dir);
-    }
+    const filePath = path.resolve(__dirname, "../data/importData.csv");
+    fs.writeFileSync(filePath, csvContent);
 
-    const filePath = path.resolve(dir, "employees.csv");
-    writeFileSync(filePath, csvContent);
     console.log(
-        `✅ CSV file generated with ${count} employees at: ${filePath}`,
+        `✅ CSV file generated with ${recordCount} records at ${filePath}`,
     );
 }

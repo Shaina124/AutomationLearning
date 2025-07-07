@@ -34,6 +34,8 @@ test.describe("Employee List Pagination", () => {
             console.log("pagination not found");
             await importCSVFile(page);
 
+            await page.waitForTimeout(5000);
+
             await page.goto(
                 "https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList",
             );
