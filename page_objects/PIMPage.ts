@@ -1,72 +1,64 @@
-import { BasePage } from "./baseObjects";
-import { utcTime } from "../utils/utcTime";
-import { faker } from "@faker-js/faker";
+import { Page, Locator } from "@playwright/test";
+import { basePage } from "./basePage";
 
-export class PIMPage extends BasePage {
-    async goToEmployeeList() {
-        await this.clickElement("text=PIM", "PIM tab");
-        await this.clickElement("text=Employee List", "Employee List tab");
+export class PIMPage extends basePage {
+    private page: Page;
+    constructor(page: Page) {
+        super();
+        this.page = page;
+    }
+    getpimTab(): Locator {
+        return this.page.getByRole("link", { name: "PIM" });
     }
 
-    async goToAddEmployee() {
-        await this.clickElement("text=PIM", "PIM tab");
-        await this.clickElement("text=Add Employee", "Add Employee tab");
+    getemployeeListTab(): Locator {
+        return this.page.getByRole("link", { name: "Employee List" });
     }
 
-    async createEmployee(): Promise<string> {
-        const firstName = faker.person.firstName();
-        const lastName = faker.person.lastName();
-        const employeeId = `emp_${utcTime()}`;
-
-        await this.fillInput(
-            this.page.getByPlaceholder("First Name"),
-            firstName,
-        );
-        await this.fillInput(this.page.getByPlaceholder("Last Name"), lastName);
-        await this.fillInput(
-            this.page.locator("form").getByRole("textbox").nth(4),
-            employeeId,
-        );
-
-        return employeeId;
+    getaddEmployeeTab(): Locator {
+        return this.page.getByRole("link", { name: "Add Employee" });
     }
 
-    async saveEmployee() {
-        await this.clickElement(
-            this.page.getByRole("button", { name: "Save" }),
-            "Save button",
-        );
+    getFirstNameInput(): Locator {
+        return this.page.getByPlaceholder("First Name");
+    }
+    getLastNameInput(): Locator {
+        return this.page.getByPlaceholder("Last Name");
     }
 
-    async searchEmployeeById(id: string) {
-        await this.page.getByRole("textbox").nth(2).fill(id);
-        await this.clickElement("button:has-text('Search')", "Search button");
+    getEmployeeIdInput(): Locator {
+        return this.page.locator("form").getByRole("textbox").nth(4);
     }
 
-    async deleteFirstEmployeeResult() {
-        await this.page.locator(".oxd-icon.bi-trash").first().click();
-        await this.page
-            .getByRole("button", { name: "\uF5DE Yes, Delete" })
-            .click();
+    getSaveButton(): Locator {
+        return this.page.getByRole("button", { name: "Save" });
     }
 
-    async clickEditFirstEmployee() {
-        await this.page
-            .locator(".oxd-icon.bi-pencil-fill")
-            .first()
-            // eslint-disable-next-line playwright/no-force-option
-            .click({ force: true });
+    getPersonalDetailsHeading(): Locator {
+        return this.page.getByRole("heading", { name: "Personal Details" });
     }
 
-    async updateFirstName(newName: string) {
-        await this.fillInput(this.page.getByPlaceholder("First Name"), newName);
+    getEmployeeListTab(): Locator {
+        return this.page.getByRole("link", { name: "Employee List" });
     }
 
-    async confirmEditSave() {
-        await this.page
-            .locator("form")
-            .filter({ hasText: "Employee Full" })
-            .getByRole("button")
-            .click();
+    getSearchEmployeeIdInput(): Locator {
+        return this.page.getByRole("textbox").nth(2);
+    }
+
+    getSearchButton(): Locator {
+        return this.page.getByRole("button", { name: "Search" });
+    }
+
+    getEditButton(): Locator {
+        return this.page.locator(".oxd-icon.bi-pencil-fill").nth(0);
+    }
+
+    getDeleteButton(): Locator {
+        return this.page.locator(".oxd-icon.bi-trash").nth(0);
+    }
+
+    getConfirmDeleteButton(): Locator {
+        return this.page.getByRole("button", { name: " Yes, Delete" });
     }
 }

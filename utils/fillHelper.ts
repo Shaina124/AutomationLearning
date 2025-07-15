@@ -1,10 +1,11 @@
-// utils/clickHelper.ts
+// utils/fillHelper.ts
 import { Page, Locator } from "@playwright/test";
 
-export async function customClick(
+export async function customFill(
     page: Page,
     selector: string | Locator,
-    description: string = "element",
+    value: string,
+    description: string = "input field",
 ): Promise<void> {
     try {
         const element =
@@ -13,12 +14,12 @@ export async function customClick(
         console.log(`🔍 Waiting for ${description} to be visible...`);
         await element.waitFor({ state: "visible", timeout: 5000 });
 
-        console.log(`🖱️ Clicking on ${description}...`);
-        await element.click({ timeout: 5000 });
+        console.log(`⌨️ Filling ${description} with value: "${value}"...`);
+        await element.fill(value, { timeout: 5000 });
 
-        console.log(`✅ Clicked on ${description}`);
+        console.log(`✅ Successfully filled ${description}`);
     } catch (error) {
-        console.error(`❌ Failed to click on ${description}:`, error);
-        throw error; // Re-throw so Playwright knows the test failed
+        console.error(`❌ Failed to fill ${description}:`, error);
+        throw error;
     }
 }

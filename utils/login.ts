@@ -1,10 +1,24 @@
 import { Page } from "@playwright/test";
+import { LoginPage } from "../page_objects/loginPage"; // adjust path if needed
+import { customFill } from "./fillHelper";
+import { customClick } from "./clickHelper";
 
 export async function login(page: Page) {
+    const loginPage = new LoginPage(page);
     await page.goto(
         "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
     );
-    await page.getByPlaceholder("Username").fill("Admin");
-    await page.getByPlaceholder("Password").fill("admin123");
-    await page.getByRole("button", { name: "Login" }).click();
+    await customFill(
+        page,
+        loginPage.getUsernameInput(),
+        "Admin",
+        "Username Input",
+    );
+    await customFill(
+        page,
+        loginPage.getPasswordInput(),
+        "admin123",
+        "Password Input",
+    );
+    await customClick(page, loginPage.getLoginButton(), "Login Button");
 }
