@@ -65,23 +65,38 @@ test.describe("Edit Employee", () => {
         await page.evaluate(() => window.scrollBy(0, 300));
 
         //EDIT EMPLOYEE
-        await page
-            .locator(".oxd-icon.bi-pencil-fill")
-            .nth(0)
-            // eslint-disable-next-line playwright/no-force-option
-            .click({ force: true });
-        await expect
-            .soft(page.getByText("Personal DetailsEmployee Full"))
-            .toBeVisible();
-        await page.getByPlaceholder("First Name").fill("123");
+        await customClick(page, pimPage.getEditButton(), "Edit Button");
+        await expect.soft(pimPage.getPersonalDetailsHeading()).toBeVisible();
+        await customFill(
+            page,
+            pimPage.getFirstNameInput(),
+            "123",
+            "Edit First Name Input",
+        );
+        await customClick(
+            page,
+            pimPage.getEditSaveButton(),
+            "Edit Save Button",
+        );
+        await expect.soft(pimPage.getPersonalDetailsHeading()).toBeVisible();
 
-        await page
-            .locator("form")
-            .filter({ hasText: "Employee Full" })
-            .getByRole("button")
-            .click();
-        await expect
-            .soft(page.getByText("Personal DetailsEmployee Full"))
-            .toBeVisible();
+        // await page
+        //     .locator(".oxd-icon.bi-pencil-fill")
+        //     .nth(0)
+        //     // eslint-disable-next-line playwright/no-force-option
+        //     .click({ force: true });
+        // await expect
+        //     .soft(page.getByText("Personal DetailsEmployee Full"))
+        //     .toBeVisible();
+        // await page.getByPlaceholder("First Name").fill("123");
+
+        // await page
+        //     .locator("form")
+        //     .filter({ hasText: "Employee Full" })
+        //     .getByRole("button")
+        //     .click();
+        // await expect
+        //     .soft(page.getByText("Personal DetailsEmployee Full"))
+        //     .toBeVisible();
     });
 });

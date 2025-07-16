@@ -54,11 +54,26 @@ export class PIMPage extends basePage {
         return this.page.locator(".oxd-icon.bi-pencil-fill").nth(0);
     }
 
+    getEditSaveButton(): Locator {
+        return this.page
+            .locator("form")
+            .filter({ hasText: "Employee Full" })
+            .getByRole("button");
+    }
+
     getDeleteButton(): Locator {
         return this.page.locator(".oxd-icon.bi-trash").nth(0);
     }
 
     getConfirmDeleteButton(): Locator {
         return this.page.getByRole("button", { name: " Yes, Delete" });
+    }
+
+    getNextPageButton(): Locator {
+        return this.page.locator(".oxd-icon.bi-chevron-right").nth(0);
+    }
+
+    getPreviousPageButton(): Locator {
+        return this.page.locator(".oxd-icon.bi-chevron-left").nth(0);
     }
 }

@@ -1,6 +1,8 @@
 import { test, Page } from "@playwright/test";
 import { login } from "../utils/login";
 import { importCSVFile } from "../utils/importCSVFile";
+import { customClick } from "../utils/clickHelper";
+import { PIMPage } from "../page_objects/PIMPage";
 
 test.describe("Employee List Pagination", () => {
     test.beforeEach(async ({ page }) => {
@@ -9,23 +11,30 @@ test.describe("Employee List Pagination", () => {
     });
 
     test("Employee List Pagination", async ({ page }) => {
-        await page.getByRole("link", { name: "PIM" }).click();
-        await page.getByRole("link", { name: "Employee List" }).click();
+        const pimPage = new PIMPage(page);
 
-        const nextButton = page.locator(".oxd-icon.bi-chevron-right").nth(0);
-        const prevButton = page.locator(".oxd-icon.bi-chevron-left").nth(0);
+        await customClick(page, pimPage.getpimTab(), "PIM Tab");
+        await customClick(
+            page,
+            pimPage.getemployeeListTab(),
+            "Employee List Tab",
+        );
+
+        const nextButton = pimPage.getNextPageButton();
+        const prevButton = pimPage.getPreviousPageButton();
 
         try {
             await nextButton.waitFor({ state: "visible", timeout: 10000 });
 
             if (await nextButton.isVisible()) {
-                await nextButton.click();
+                await customClick(page, nextButton, "Next Button");
+
                 console.log("pagination is visible");
 
                 // eslint-disable-next-line playwright/no-wait-for-timeout
                 await page.waitForTimeout(2000);
 
-                await prevButton.click();
+                await customClick(page, prevButton, "Previous Button");
             } else {
                 console.log("Next button is not visible");
                 await importCSVFile(page);
@@ -41,10 +50,10 @@ test.describe("Employee List Pagination", () => {
             );
 
             await nextButton.waitFor({ state: "visible", timeout: 10000 });
-            await nextButton.click();
+            await customClick(page, nextButton, "Next Button");
 
             await prevButton.waitFor({ state: "visible", timeout: 10000 });
-            await prevButton.click();
+            await customClick(page, prevButton, "Previous Button");
         }
     });
 });

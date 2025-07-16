@@ -4,6 +4,8 @@ import { readFileSync } from "fs";
 import { customClick } from "../utils/clickHelper";
 import { createEmp } from "../utils/createEmp";
 import { writeFileSync } from "fs";
+import { customFill } from "../utils/fillHelper";
+import { PIMPage } from "../page_objects/PIMPage";
 
 test.describe("Search Employee", () => {
     test.beforeEach(async ({ page }) => {
@@ -12,10 +14,9 @@ test.describe("Search Employee", () => {
 
         await createEmp(page);
 
-        const search_employeeIdInput = page
-            .locator("form")
-            .getByRole("textbox")
-            .nth(4);
+        const pimPage = new PIMPage(page);
+
+        const search_employeeIdInput = pimPage.getEmployeeIdInput();
         const search_employeeId = await search_employeeIdInput.inputValue();
         console.log(`Captured Employee ID: ${search_employeeId}`);
 
@@ -24,12 +25,13 @@ test.describe("Search Employee", () => {
             JSON.stringify({ search_employeeId }, null, 4),
         );
 
-        await page.getByRole("button", { name: "Save" }).click();
-        await expect
-            .soft(page.getByRole("heading", { name: "Personal Details" }))
-            .toBeVisible();
+        await customClick(page, pimPage.getSaveButton(), "Save Button");
+
+        await expect.soft(pimPage.getPersonalDetailsHeading()).toBeVisible();
     });
     test("Search for employee", async ({ page }) => {
+        const pimPage = new PIMPage(page);
+
         const data = JSON.parse(
             readFileSync("data/search employee.json", "utf-8"),
         );
@@ -39,7 +41,13 @@ test.describe("Search Employee", () => {
 
         await customClick(page, "text=Employee List", "Employee List link");
 
-        await page.getByRole("textbox").nth(2).fill(search_employeeId);
+        await customFill(
+            page,
+            pimPage.getSearchEmployeeIdInput(),
+            search_employeeId,
+            "Search Employee ID Input",
+        );
+        //await page.getByRole("textbox").nth(2).fill(search_employeeId);
 
         await customClick(page, "button:has-text('Search')", "Search button");
 
