@@ -4,6 +4,18 @@ import { generateCSVFile } from "./generateCSVFile";
 import { ImportPage } from "../page_objects/ImportPage";
 import { customClick } from "./clickHelper";
 
+/**
+ * Imports a generated CSV file into the OrangeHRM system.
+ *
+ * Generates the CSV, navigates to the import page, uploads the file,
+ * and clicks the upload button.
+ *
+ * Uses POM and custom utilities for interaction.
+ *
+ * @param page Playwright Page instance
+ * @throws Exception if the upload fails
+ */
+
 export async function importCSVFile(page: Page) {
     generateCSVFile();
 

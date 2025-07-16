@@ -1,6 +1,18 @@
 // utils/clickHelper.ts
 import { Page, Locator } from "@playwright/test";
 
+/**
+ * Clicks an element after waiting for it to be visible, with logging.
+ *
+ * @param {Page} page - Playwright Page instance.
+ * @param {string | Locator} selector - Element selector or Locator.
+ * @param {string} [description="element"] - Optional description for logging.
+ * @returns {Promise<void>} Resolves on successful click, throws on failure.
+ *
+ * @example
+ * await customClick(page, "#submit-button", "Submit Button");
+ */
+
 export async function customClick(
     page: Page,
     selector: string | Locator,

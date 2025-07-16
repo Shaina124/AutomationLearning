@@ -6,6 +6,18 @@ import { customClick } from "../utils/clickHelper";
 import { customFill } from "../utils/fillHelper";
 import { PIMPage } from "../page_objects/PIMPage";
 
+/**
+ * Test suite for editing an employee in the OrangeHRM system.
+ *
+ * <p>The suite includes:
+ * <ul>
+ *   <li>Setup steps that log in, create a new employee, capture and save the employee ID and first name</li>
+ *   <li>A test that searches for the created employee, verifies details, edits the first name, and saves changes</li>
+ * </ul>
+ *
+ * <p>Utilizes custom utility functions and the Page Object Model (POM) for modular and maintainable test automation.
+ */
+
 test.describe("Edit Employee", () => {
     test.beforeEach(async ({ page }) => {
         //LOGIN

@@ -6,6 +6,15 @@ import { customClick } from "../utils/clickHelper";
 import { customFill } from "../utils/fillHelper";
 import { PIMPage } from "../page_objects/PIMPage";
 
+/**
+ * Test suite for deleting an employee in OrangeHRM.
+ *
+ * Creates an employee, stores the ID, and then deletes that employee.
+ * Uses custom utilities and the POM for interactions.
+ *
+ * @throws Exception if any test step fails
+ */
+
 test.describe("Delete Employee", () => {
     test.beforeEach(async ({ page }) => {
         //LOGIN

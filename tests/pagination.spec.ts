@@ -4,6 +4,19 @@ import { importCSVFile } from "../utils/importCSVFile";
 import { customClick } from "../utils/clickHelper";
 import { PIMPage } from "../page_objects/PIMPage";
 
+/**
+ * Test suite for verifying employee list pagination functionality in OrangeHRM.
+ *
+ * <p>Includes:
+ * <ul>
+ *   <li>Login before each test</li>
+ *   <li>Test to navigate to the Employee List and verify pagination controls (Next and Previous buttons)</li>
+ *   <li>Handles cases where pagination is not visible by importing CSV data and retrying</li>
+ * </ul>
+ *
+ * <p>Uses custom click wrappers and the Page Object Model (POM) for maintainable test automation.
+ */
+
 test.describe("Employee List Pagination", () => {
     test.beforeEach(async ({ page }) => {
         //LOGIN

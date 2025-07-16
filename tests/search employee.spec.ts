@@ -7,6 +7,19 @@ import { writeFileSync } from "fs";
 import { customFill } from "../utils/fillHelper";
 import { PIMPage } from "../page_objects/PIMPage";
 
+/**
+ * Test suite for searching an employee in the OrangeHRM system.
+ *
+ * <p>Includes:
+ * <ul>
+ *   <li>Setup steps that log in, create a new employee, capture and save the employee ID</li>
+ *   <li>A test that searches for the saved employee ID in the Employee List</li>
+ *   <li>Verifies that the employee appears in the search results</li>
+ * </ul>
+ *
+ * <p>Uses utility functions and the Page Object Model (POM) for modular and maintainable test automation.
+ */
+
 test.describe("Search Employee", () => {
     test.beforeEach(async ({ page }) => {
         //LOGIN

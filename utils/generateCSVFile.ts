@@ -3,6 +3,16 @@ import path from "path";
 import { faker } from "@faker-js/faker";
 import { utcTime } from "./utcTime";
 
+/**
+ * Generates a CSV file with fake employee data using Faker.
+ *
+ * @param {number} [recordCount=55] - Number of records to generate.
+ * @returns {void}
+ *
+ * @example
+ * generateCSVFile(100);
+ */
+
 export function generateCSVFile(recordCount = 55) {
     const headers = [
         "first_name",

@@ -5,6 +5,20 @@ import { customClick } from "../utils/clickHelper";
 import { customFill } from "../utils/fillHelper";
 import { PIMPage } from "../page_objects/PIMPage";
 
+/**
+ * Creates a new employee in the HRM system using Playwright.
+ *
+ * This function generates a unique employee using Faker for first and last names,
+ * and a UTC-based ID. It navigates through the PIM module using custom wrappers
+ * for clicking and filling form fields, following the Page Object Model (POM) structure.
+ *
+ * @param {Page} page - The Playwright Page instance used for interacting with the web page.
+ * @returns {Promise<void>} Resolves once the employee creation steps are completed.
+ *
+ * @example
+ * await createEmp(page);
+ */
+
 export async function createEmp(page: Page) {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
