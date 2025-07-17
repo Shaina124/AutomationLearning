@@ -1,16 +1,26 @@
 import { defineConfig, devices } from "@playwright/test";
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import { execSync } from "child_process";
 
 /**
- * See https://playwright.dev/docs/test-configuration.
+ * Function to detect current Git branch.
+ * Defaults to 'main' if detection fails (e.g., on CI).
  */
+function getCurrentGitBranch(): string {
+    try {
+        return execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
+    } catch {
+        return process.env.GITHUB_REF_NAME || "ci"; // fallback for GitHub Actions
+    }
+}
+
+const currentBranch = getCurrentGitBranch();
+const isCI = process.env.CI;
+const isMainBranch = currentBranch === "main";
+
+// Headed for main, headless for others (esp. CI/CD)
+const headlessMode = isMainBranch && !isCI ? false : true;
+
 export default defineConfig({
     testDir: "./tests",
     /* Run tests in files in parallel */
@@ -48,7 +58,10 @@ export default defineConfig({
     projects: [
         {
             name: "chromium",
-            use: { ...devices["Desktop Chrome"], headless: true },
+            use: {
+                ...devices["Desktop Chrome"],
+                headless: headlessMode, // 🔁 Dynamically switch based on branch
+            },
         },
 
         // {
