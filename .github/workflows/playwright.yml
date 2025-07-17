@@ -27,8 +27,8 @@ jobs:
             -   name: 🎭 Install Playwright Browsers
                 run: npx playwright install --with-deps
 
-            -   name: 🧪 Run Playwright tests
-                run: npx playwright test
+            -   name: 🧪 Run Playwright tests with 5 workers
+                run: npx playwright test --workers=5
 
             -   name: 📁 Upload Playwright HTML Report
                 if: always()
