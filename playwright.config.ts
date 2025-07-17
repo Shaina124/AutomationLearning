@@ -21,6 +21,11 @@ const isMainBranch = currentBranch === "main";
 // Headed for main, headless for others (esp. CI/CD)
 const headlessMode = isMainBranch && !isCI ? false : true;
 
+// eslint-disable-next-line playwright/require-hook
+console.log(
+    `🌿 Branch: ${currentBranch} | CI: ${isCI} | Headless Mode: ${headlessMode}`,
+);
+
 export default defineConfig({
     testDir: "./tests",
     /* Run tests in files in parallel */
