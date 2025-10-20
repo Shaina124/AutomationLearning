@@ -1,30 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-import { execSync } from "child_process";
-
-/**
- * Function to detect current Git branch.
- * Defaults to 'main' if detection fails (e.g., on CI).
- */
-function getCurrentGitBranch(): string {
-    try {
-        return execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
-    } catch {
-        return process.env.GITHUB_REF_NAME || "ci"; // fallback for GitHub Actions
-    }
-}
-
-const currentBranch = getCurrentGitBranch();
-const isCI = process.env.CI;
-const isMainBranch = currentBranch === "main";
-
-// Headed for main, headless for others (esp. CI/CD)
-const headlessMode = isMainBranch && !isCI ? false : true;
-
-// eslint-disable-next-line playwright/require-hook
-console.log(
-    `🌿 Branch: ${currentBranch} | CI: ${isCI} | Headless Mode: ${headlessMode}`,
-);
+const isCI = !!process.env.CI;
+const isHeadless = isCI ? true : false;
 
 export default defineConfig({
     testDir: "./tests",
@@ -65,7 +42,7 @@ export default defineConfig({
             name: "chromium",
             use: {
                 ...devices["Desktop Chrome"],
-                headless: headlessMode, // 🔁 Dynamically switch based on branch
+                headless: isHeadless, // 🔁 Dynamically switch based on branch
             },
         },
 
